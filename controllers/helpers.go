@@ -3,7 +3,6 @@ package controllers
 import (
 	"crypto/rand"
 	"fmt"
-	"log"
 	"math/big"
 	"mime/multipart"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"warranty.com/utils"
 )
 
 type FormMultipart struct {
@@ -61,8 +61,7 @@ func sendMail(email string, mssg string) error {
 	plainTextContent := mssg
 	htmlContent := fmt.Sprintf("<strong>%s</strong>", mssg)
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient("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")
-	response, err := client.Send(message)
-	log.Println(response.StatusCode)
+	client := sendgrid.NewSendClient(utils.Dotenv("SENDGRID_KEY"))
+	_, err := client.Send(message)
 	return err
 }

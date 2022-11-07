@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	r := routes.RouterInit()
+	r := routes.RouterInit("v1")
 	log.Println("Starting server on Port: 5050")
 	log.Fatal(http.ListenAndServe(":5050", r))
 }

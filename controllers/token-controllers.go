@@ -145,7 +145,6 @@ func AddApprovedToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if presentToken.Minter != address {
-		fmt.Println("Not the minter")
 		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}
@@ -269,9 +268,7 @@ func RegisterToken(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		log.Println("=====tokenApproval============", token.Approval.From)
 		presentToken.Approval = token.Approval
-		log.Println("presentTokenApproval:", presentToken.Approval.From)
 		presentToken.Email = token.Email
 		presentToken.SaleDate = token.SaleDate
 		presentToken.ApprovalStatus = false
