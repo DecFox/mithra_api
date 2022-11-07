@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -8,14 +9,20 @@ import (
 	"warranty.com/controllers"
 )
 
-func RouterInit() http.Handler {
+func RouterInit(version string) http.Handler {
 	controllers.ControllersInit()
 
 	r := chi.NewRouter()
 	r.Use(cors.Default().Handler)
 
-	r.Route("/token", TokenRoutes)
-	r.Route("/brand", UserRoutes)
+	route := fmt.Sprintf("/api/%s", version)
+	r.Route(route, routes)
 
 	return r
+}
+
+func routes(r chi.Router) {
+	r.Route("/ping", PingRoutes)
+	r.Route("/token", TokenRoutes)
+	r.Route("/brand", UserRoutes)
 }

@@ -26,9 +26,6 @@ type Auth struct {
 func VerifyAddress(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			// body, _ := r.GetBody()
-
-			//--------------------------------------
 			auth := &Auth{}
 			buf := bytes.NewBuffer(make([]byte, 0))
 			reader := io.TeeReader(r.Body, buf)
@@ -51,8 +48,6 @@ func VerifyAddress(next http.Handler) http.Handler {
 				return
 			}
 
-			log.Println(data)
-
 			sigByte := hexutil.MustDecode(auth.Signature)
 			if sigByte[64] != 27 && sigByte[64] != 28 {
 				http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -62,7 +57,6 @@ func VerifyAddress(next http.Handler) http.Handler {
 
 			message := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(data), data)
 			publicKey, err := crypto.SigToPub(crypto.Keccak256([]byte(message)), sigByte)
-			log.Println(publicKey)
 			if err != nil {
 				log.Println(err)
 				http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -70,7 +64,6 @@ func VerifyAddress(next http.Handler) http.Handler {
 			}
 
 			derivedAddress := crypto.PubkeyToAddress(*publicKey).String()
-			log.Println(derivedAddress)
 			pubAddress := strings.ToLower(derivedAddress)
 			if pubAddress != auth.EthAddress {
 				log.Println("pubAddress : ", pubAddress)
